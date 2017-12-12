@@ -23,7 +23,7 @@ Definition isNFoldProduct (t p : C) (n : nat) :=
   total2 (fun projections => isProductCone (stn n) C (fun _ => t) p projections).
 
 Definition isGeneratingObject (t : C) :=
-  ∏ (c : C), total2 (isNFoldProduct t c). (* probably need truncation *)
+   ∥ ∏ (c : C), total2 (isNFoldProduct t c) ∥.
 
 Definition isLawvereTheory :=
   total2 isGeneratingObject.
@@ -32,9 +32,11 @@ End LawvereTheory.
 
 Definition LawvereTheory := total2 isLawvereTheory.
 
-Definition underlying_precat (T: LawvereTheory) := pr1 (pr1 T).
+Definition underlying_precat (T : LawvereTheory) := pr1 (pr1 T).
 
-Definition generating_object (T: LawvereTheory) := pr1 (pr2 T).
+Search ishinh.
+Definition generating_object (T : LawvereTheory) : underlying_precat T :=
+  pr1 (pr2 T).
 
 Section FinProductPreservation.
 
@@ -82,7 +84,11 @@ Section Morphisms.
 
 Context {T1 T2: LawvereTheory}.
 
-Definition is_Lawvere_map (F : functor (underlying_precat T1) (underlying_precat T2)) := (F (generating_object T1) = generating_object T2) × (preserves_fin_products F).
+Definition preserves_generating_object (F : functor (underlying_precat T1) (underlying_precat T2)) :=
+  (F (generating_object T1) = generating_object T2).
+
+Definition is_Lawvere_map (F : functor (underlying_precat T1) (underlying_precat T2)) :=
+  (preserves_generating_object F) × (preserves_fin_products F).
 
 Definition Lawvere_maps := total2 is_Lawvere_map.
 
@@ -120,7 +126,7 @@ Proof.
      exists ((pr1 X) ∙ (pr1 X0)).
      unfold is_Lawvere_map.
      split.
-     + simpl.
+     + unfold preserves_generating_object. simpl.
        rewrite (pr1 (pr2 X)).
        apply (pr1 (pr2 X0)).
      + apply comp_of_FP_functors_is_FP.
