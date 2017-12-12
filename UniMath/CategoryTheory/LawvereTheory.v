@@ -77,9 +77,9 @@ Section Morphisms.
 
 Context {T1 T2: LawvereTheory}.
 
-Variable (F : functor (underlying_precat T1) (underlying_precat T2)).
+Definition is_Lawvere_map (F : functor (underlying_precat T1) (underlying_precat T2)) := (F (generating_object T1) = generating_object T2) × (preserves_fin_products F).
 
-Definition is_Lawvere_map := (F (generating_object T1) = generating_object T2) × (preserves_fin_products F).
+Definition Lawvere_maps := total2 is_Lawvere_map.
 
 End Morphisms.
 
@@ -95,7 +95,48 @@ Proof.
       tauto.
 Defined.
 
+Definition precat_of_Lawvere_Theories_ob_mor : precategory_ob_mor.
+Proof.
+   unfold precategory_ob_mor.
+   exists LawvereTheory.
+   intros.
+   exact (@Lawvere_maps X X0).
+   Defined.
 
+Definition precat_of_Lawvere_Theories_data : precategory_data.
+Proof.
+   exists precat_of_Lawvere_Theories_ob_mor.
+   split.
+   - intro c.
+   destruct c.
+   exists (functor_identity pr1).
+   exact (identity_is_Lawvere_map _).
+   - intros.
+     exists ((pr1 X) ∙ (pr1 X0)).
+     unfold is_Lawvere_map.
+     split.
+     + simpl.
+       rewrite (pr1 (pr2 X)).
+       apply (pr1 (pr2 X0)).
+     + apply comp_of_FP_functors_is_FP.
+       exact (pr2 (pr2 X)).
+       exact (pr2 (pr2 X0)).
+Defined.
+
+(*
+Definition precat_of_Lawevere_Theories : precategory.
+Proof.
+  exists precat_of_Lawvere_Theories_data.
+  unfold is_precategory.
+  - split.
+    + split.
+      simpl.
+      intros.
+      unfold compose.
+      unfold identity.
+      simpl.
+      rewrite with functor_identity_left. 
+*)
 
 (* todo: category of Lawvere theories *)
 (* todo: projections *)
