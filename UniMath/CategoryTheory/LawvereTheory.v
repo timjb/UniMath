@@ -85,10 +85,17 @@ Section Morphisms.
 Context {T1 T2: LawvereTheory}.
 
 Definition preserves_generating_object (F : functor (underlying_precat T1) (underlying_precat T2)) :=
-  (F (generating_object T1) = generating_object T2).
+  ∥ iso (F (generating_object T1)) (generating_object T2) ∥.
 
 Definition is_Lawvere_map (F : functor (underlying_precat T1) (underlying_precat T2)) :=
   (preserves_generating_object F) × (preserves_fin_products F).
+
+Lemma isaprop_is_Lawvere_map (F : functor (underlying_precat T1) (underlying_precat T2)) : isaprop (is_Lawvere_map F).
+Proof.
+  apply isapropdirprod.
+  + apply isapropishinh.
+  + apply isaprop_preserves_fin_products.
+Defined.
 
 Definition Lawvere_maps := total2 is_Lawvere_map.
 
@@ -100,7 +107,8 @@ Proof.
   unfold is_Lawvere_map.
   split.
     - simpl.
-      reflexivity.
+      apply hinhpr.
+      apply identity_iso.
     - unfold preserves_fin_products.
       simpl.
       tauto.
@@ -127,8 +135,25 @@ Proof.
      unfold is_Lawvere_map.
      split.
      + unfold preserves_generating_object. simpl.
-       rewrite (pr1 (pr2 X)).
-       apply (pr1 (pr2 X0)).
+       assert (preserves_generating_object (pr1 X0) -> preserves_generating_object (pr1 X) -> ishinh_UU (iso ((pr1 X0) ((pr1 X) (generating_object a))) (generating_object c))).
+         Check factor_through_squash.
+         apply (@factor_through_squash (iso (pr1 X0 (generating_object b)) (generating_object c)) (preserves_generating_object (pr1 X) -> _)).
+           repeat (apply impred; intro).
+           exact (pr2 t0).
+         intro iso1.
+         apply factor_through_squash.
+           repeat (apply impred; intro).
+           exact (pr2 t).
+         intro iso2.
+         apply hinhpr.
+         SearchAbout iso.
+         eapply iso_comp.
+          Check functor_on_iso.
+          apply functor_on_iso. exact iso2.
+          exact iso1.
+       apply X1.
+       exact (pr1 (pr2 X0)).
+       exact (pr1 (pr2 X)).
      + apply comp_of_FP_functors_is_FP.
        exact (pr2 (pr2 X)).
        exact (pr2 (pr2 X0)).
