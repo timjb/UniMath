@@ -37,6 +37,12 @@ Definition isProductCone (c : ∏ (i : I), C) (p : C)
   ∏ (a : C) (f : ∏ i, a --> c i),
     iscontr (total2 (fun (fap : a --> p) => ∏ i, fap · pi i = f i)).
 
+Definition isaprop_isProductCone (c : ∏ (i : I), C) (p : C) (pi : ∏ i, p --> c i) : isaprop (isProductCone c p pi).
+Proof.
+  repeat (apply impred; intro).
+  apply isapropiscontr.
+Defined.
+
 Definition ProductCone (ci : ∏ i, C) :=
    total2 (fun pp1p2 : total2 (λ p : C, ∏ i, p --> ci i) =>
              isProductCone ci (pr1 pp1p2) (pr2 pp1p2)).
