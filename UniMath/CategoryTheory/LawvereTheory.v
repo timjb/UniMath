@@ -43,12 +43,17 @@ Variable (F : functor C D).
 
 Definition preserves_fin_products : UU :=
     ∏ (n : nat),
-    ∏ (d : ∏ (i : stn n), C),
+    ∏ (d : stn n -> C),
     ∏ (p : C),
     ∏ (cc : ∏ (i : stn n), p --> d i),
       isProductCone (stn n) C d p cc ->
       isProductCone (stn n) D (fun i => F (d i)) (F p) (fun i => functor_on_morphisms F (cc i)).
 
+Lemma isaprop_preserves_fin_products : isaprop preserves_fin_products.
+Proof.
+  repeat (apply impred; intro).
+  apply isapropiscontr.
+Defined.
 
 End FinProductPreservation.
 
