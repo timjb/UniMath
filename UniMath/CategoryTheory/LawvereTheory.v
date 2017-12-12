@@ -32,6 +32,10 @@ End LawvereTheory.
 
 Definition LawvereTheory := total2 isLawvereTheory.
 
+Definition underlying_precat (T: LawvereTheory) := pr1 (pr1 T).
+
+Definition generating_object (T: LawvereTheory) := pr1 (pr2 T).
+
 Section FinProductPreservation.
 
 Context {C D : precategory}.
@@ -45,7 +49,20 @@ Definition preserves_fin_products : UU :=
       isProductCone (stn n) C d p cc ->
       isProductCone (stn n) D (fun i => F (d i)) (F p) (fun i => functor_on_morphisms F (cc i)).
 
+
 End FinProductPreservation.
+
+Lemma comp_of_FP_functors_is_FP : 
+∏ (C D E : precategory) (F1 : functor C D) (F2 : functor D E), 
+(preserves_fin_products F1) -> (preserves_fin_products F2) -> (preserves_fin_products (F1 ∙ F2)).
+Proof.
+  intros.
+  unfold preserves_fin_products.
+  intros.
+  apply X0.
+  apply X.
+  assumption.
+Defined.
 
 Section Models.
 
@@ -55,6 +72,29 @@ Definition isModel (A : functor (pr1 T) HSET) := preserves_fin_products A.
 Definition Model := total2 (fun x => isModel x).
 
 End Models.
+
+Section Morphisms.
+
+Context {T1 T2: LawvereTheory}.
+
+Variable (F : functor (underlying_precat T1) (underlying_precat T2)).
+
+Definition is_Lawvere_map := (F (generating_object T1) = generating_object T2) × (preserves_fin_products F).
+
+End Morphisms.
+
+Lemma identity_is_Lawvere_map : ∏ T: LawvereTheory, is_Lawvere_map (functor_identity (underlying_precat T)).
+Proof.
+  intro T.
+  unfold is_Lawvere_map.
+  split.
+    - simpl.
+      reflexivity.
+    - unfold preserves_fin_products.
+      simpl.
+      tauto.
+Defined.
+
 
 
 (* todo: category of Lawvere theories *)
