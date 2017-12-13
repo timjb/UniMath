@@ -35,9 +35,9 @@ End Lawvere_Theory.
 
 Definition Lawvere_Theory := total2 is_Lawvere_Theory.
 
-Definition underlying_category (T : Lawvere_Theory) : category := pr1 T.
+Coercion underlying_category (T : Lawvere_Theory) : category := pr1 T.
 
-Definition generating_object (T : Lawvere_Theory) : underlying_category T :=
+Definition generating_object (T : Lawvere_Theory) : T :=
   pr1 (pr1 (pr2 T)).
 
 Section Finite_Product_Preservation.
@@ -77,8 +77,8 @@ Section Models.
 
 Variable (T : Lawvere_Theory).
 
-Definition isModel (A : functor (pr1 T) HSET) := preserves_finite_products A.
-Definition Model := total2 (fun x => isModel x).
+Definition is_Model (A : functor (pr1 T) HSET) := preserves_finite_products A.
+Definition Model := total2 (fun x => is_Model x).
 
 End Models.
 
@@ -86,13 +86,13 @@ Section Morphisms.
 
 Context {T1 T2: Lawvere_Theory}.
 
-Definition preserves_generating_object (F : functor (underlying_category T1) (underlying_category T2)) :=
+Definition preserves_generating_object (F : functor  T1  T2) :=
   ∥ iso (F (generating_object T1)) (generating_object T2) ∥.
 
-Definition is_Lawvere_map (F : functor (underlying_category T1) (underlying_category T2)) :=
+Definition is_Lawvere_map (F : functor  T1 T2) :=
   (preserves_generating_object F) × (preserves_finite_products F).
 
-Lemma isaprop_is_Lawvere_map (F : functor (underlying_category T1) (underlying_category T2)) : isaprop (is_Lawvere_map F).
+Lemma isaprop_is_Lawvere_map (F : functor T1 T2) : isaprop (is_Lawvere_map F).
 Proof.
   apply isapropdirprod.
   + apply isapropishinh.
@@ -103,7 +103,7 @@ Definition Lawvere_maps := total2 is_Lawvere_map.
 
 End Morphisms.
 
-Lemma identity_is_Lawvere_map : ∏ T: Lawvere_Theory, is_Lawvere_map (functor_identity (underlying_category T)).
+Lemma identity_is_Lawvere_map : ∏ T: Lawvere_Theory, is_Lawvere_map (functor_identity T).
 Proof.
   intro T.
   unfold is_Lawvere_map.
@@ -187,7 +187,7 @@ Proof.
     use tpair.
     -- simpl.
        symmetry.
-       apply (functor_assoc (underlying_category a) (underlying_category b) (underlying_category c) (underlying_category d)).
+       apply (functor_assoc  (underlying_category a) (underlying_category b) (underlying_category c) (underlying_category d)).
     -- apply isaprop_is_Lawvere_map.
 Qed.
 
