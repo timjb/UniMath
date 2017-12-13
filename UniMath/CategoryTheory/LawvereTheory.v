@@ -33,7 +33,7 @@ End LawvereTheory.
 
 Definition LawvereTheory := total2 isLawvereTheory.
 
-Definition underlying_precat (T : LawvereTheory) := pr1 (pr1 T).
+Definition underlying_precat (T : LawvereTheory) : precategory := pr1 T.
 
 Search ishinh.
 Definition generating_object (T : LawvereTheory) : underlying_precat T :=
@@ -160,21 +160,36 @@ Proof.
        exact (pr2 (pr2 X0)).
 Defined.
 
-(*
 Definition precat_of_Lawevere_Theories : precategory.
 Proof.
   exists precat_of_Lawvere_Theories_data.
   unfold is_precategory.
-  - split.
-    + split.
-      simpl.
-      intros.
-      unfold compose.
-      unfold identity.
-      simpl.
-      rewrite with functor_identity_left. 
-*)
+  split. split.
+  - simpl.
+    intros.
+    unfold compose.
+    unfold identity.
+    apply total2_paths_equiv.
+    use tpair.
+    -- simpl.
+       apply functor_identity_left.
+    -- apply isaprop_is_Lawvere_map.
+  - simpl.
+    intros.
+    unfold compose.
+    unfold identity.
+    apply total2_paths_equiv.
+    use tpair.
+    -- simpl.
+       apply functor_identity_right.
+    -- apply isaprop_is_Lawvere_map.
+  - intros a b c d f g h.
+    apply total2_paths_equiv.
+    use tpair.
+    -- simpl. Check functor_assoc. symmetry. apply (functor_assoc (underlying_precat a) (underlying_precat b) (underlying_precat c) (underlying_precat d)).
+    -- apply isaprop_is_Lawvere_map.
+Qed.
 
-(* todo: category of Lawvere theories *)
+(* todo: is Law univalent? *)
 (* todo: projections *)
 (* todo: models *)
