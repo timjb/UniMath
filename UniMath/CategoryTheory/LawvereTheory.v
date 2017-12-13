@@ -87,17 +87,10 @@ Section Morphisms.
 Context {T1 T2: Lawvere_Theory}.
 
 Definition preserves_generating_object (F : functor  T1  T2) :=
-  ∥ iso (F (generating_object T1)) (generating_object T2) ∥.
+   iso (F (generating_object T1)) (generating_object T2).
 
 Definition is_Lawvere_map (F : functor  T1 T2) :=
   (preserves_generating_object F) × (preserves_finite_products F).
-
-Lemma isaprop_is_Lawvere_map (F : functor T1 T2) : isaprop (is_Lawvere_map F).
-Proof.
-  apply isapropdirprod.
-  + apply isapropishinh.
-  + apply isaprop_preserves_finite_products.
-Defined.
 
 Definition Lawvere_maps := total2 is_Lawvere_map.
 
@@ -109,7 +102,6 @@ Proof.
   unfold is_Lawvere_map.
   split.
     - simpl.
-      apply hinhpr.
       apply identity_iso.
     - unfold preserves_finite_products.
       simpl.
@@ -137,22 +129,9 @@ Proof.
      unfold is_Lawvere_map.
      split.
      + unfold preserves_generating_object. simpl.
-       assert (preserves_generating_object (pr1 X0) -> preserves_generating_object (pr1 X) -> ishinh_UU (iso ((pr1 X0) ((pr1 X) (generating_object a))) (generating_object c))).
-         apply (@factor_through_squash (iso (pr1 X0 (generating_object b)) (generating_object c)) (preserves_generating_object (pr1 X) -> _)).
-           repeat (apply impred; intro).
-           exact (pr2 t0).
-         intro iso1.
-         apply factor_through_squash.
-           repeat (apply impred; intro).
-           exact (pr2 t).
-         intro iso2.
-         apply hinhpr.
-         eapply iso_comp.
-          apply functor_on_iso. exact iso2.
-          exact iso1.
-       apply X1.
-       exact (pr1 (pr2 X0)).
-       exact (pr1 (pr2 X)).
+       eapply iso_comp.
+       -- apply functor_on_iso. exact (pr1 (pr2 X)).
+       -- exact (pr1 (pr2 X0)).
      + apply comp_of_fin_prod_preserving_functors_is_fin_prod_preserving.
        exact (pr2 (pr2 X)).
        exact (pr2 (pr2 X0)).
@@ -172,7 +151,10 @@ Proof.
     use tpair.
     -- simpl.
        apply functor_identity_left.
-    -- apply isaprop_is_Lawvere_map.
+    -- SearchAbout dirprod.
+       apply dirprod_paths.
+       --- simpl. 
+           apply functor_on_iso_identity_iso_is_identity_iso.
   - simpl.
     intros.
     unfold compose.

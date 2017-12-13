@@ -1502,4 +1502,12 @@ Lemma functor_cancel_pw {C C' D D' : precategory} hsD hsD'
 Proof.
   intro e.
   now induction e.
+Qed. 
+
+Lemma functor_on_iso_identity_iso_is_identity_iso 
+{C D : precategory} (F : functor C D) (c : C): (functor_on_iso F) (identity_iso c) = (identity_iso (F c)).
+Proof.
+apply eq_iso.
+simpl.
+apply functor_id.
 Qed.
