@@ -35,7 +35,6 @@ Definition LawvereTheory := total2 isLawvereTheory.
 
 Definition underlying_precat (T : LawvereTheory) : precategory := pr1 T.
 
-Search ishinh.
 Definition generating_object (T : LawvereTheory) : underlying_precat T :=
   pr1 (pr1 (pr2 T)).
 
@@ -160,7 +159,7 @@ Proof.
        exact (pr2 (pr2 X0)).
 Defined.
 
-Definition precat_of_Lawevere_Theories : precategory.
+Definition precat_of_Lawvere_Theories : precategory.
 Proof.
   exists precat_of_Lawvere_Theories_data.
   unfold is_precategory.
