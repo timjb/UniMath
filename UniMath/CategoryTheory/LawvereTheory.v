@@ -12,6 +12,7 @@ Require Import UniMath.CategoryTheory.functor_categories.
 Require Import UniMath.CategoryTheory.ProductCategory.
 Require Import UniMath.Combinatorics.StandardFiniteSets.
 Require Import UniMath.CategoryTheory.limits.graphs.limits.
+Require Import UniMath.CategoryTheory.limits.FinOrdProducts.
 Require Import UniMath.CategoryTheory.categories.category_hset.
 Local Open Scope cat.
 
@@ -26,7 +27,7 @@ Definition isGeneratingObject (t : C) :=
    ∥ ∏ (c : C), total2 (isNFoldProduct t c) ∥.
 
 Definition isLawvereTheory :=
-  total2 isGeneratingObject.
+  total2 isGeneratingObject × hasFinOrdProducts C.
 
 End LawvereTheory.
 
@@ -36,7 +37,7 @@ Definition underlying_precat (T : LawvereTheory) := pr1 (pr1 T).
 
 Search ishinh.
 Definition generating_object (T : LawvereTheory) : underlying_precat T :=
-  pr1 (pr2 T).
+  pr1 (pr1 (pr2 T)).
 
 Section FinProductPreservation.
 
