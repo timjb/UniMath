@@ -501,6 +501,19 @@ Proof.
   apply is_iso_comp_of_isos.
 Defined.
 
+Lemma iso_comp_id_left {C : precategory} {a b : ob C}
+  (f : iso a b) : iso_comp (identity_iso a) f = f.
+Proof.
+  apply eq_iso.
+  apply id_left.
+Defined.
+
+Lemma iso_comp_id_right {C : precategory} {a b : ob C}
+  (f : iso a b) : iso_comp f (identity_iso b) = f.
+Proof.
+  apply eq_iso.
+  apply id_right.
+Defined.
 
 Lemma inv_iso_unique (C : precategory) (a b : C) (f : iso a b) (g : iso b a) :
   precomp_with f g = identity _ -> g = iso_inv_from_iso f.

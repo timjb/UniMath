@@ -149,21 +149,31 @@ Proof.
     unfold identity.
     apply total2_paths_equiv.
     use tpair.
-    -- simpl.
-       apply functor_identity_left.
-    -- SearchAbout dirprod.
-       apply dirprod_paths.
-       --- simpl. 
-           apply functor_on_iso_identity_iso_is_identity_iso.
+    + simpl.
+      apply functor_identity_left.
+    + apply dirprod_paths.
+      -- simpl.
+         rewrite functor_on_iso_identity_iso_is_identity_iso.
+         apply eq_iso.
+         apply id_left.
+      -- apply isaprop_preserves_finite_products.
   - simpl.
     intros.
     unfold compose.
     unfold identity.
     apply total2_paths_equiv.
     use tpair.
-    -- simpl.
-       apply functor_identity_right.
-    -- apply isaprop_is_Lawvere_map.
+    + simpl.
+      apply functor_identity_right.
+    + apply dirprod_paths.
+      -- simpl.
+         rewrite iso_comp_id_right.
+         SearchAbout iso_comp.
+         rewrite functor_on_iso_identity_iso_is_identity_iso.
+         apply eq_iso.
+         apply id_left.
+         
+    
   - intros a b c d f g h.
     apply total2_paths_equiv.
     use tpair.
