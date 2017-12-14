@@ -1867,6 +1867,27 @@ Proof.
     apply transportf_fiber_total2_paths.
 Defined.
 
+Lemma total2_paths_equiv_pr1' {A : UU} (B : A -> UU) (x x' : ∑ a, B a)
+  (dp : x = x') : maponpaths pr1 (invmap (total2_paths_equiv B x x') (total2_paths_equiv B x x' dp)) = pr1 (total2_paths_equiv B x x' dp).
+Proof.
+  intros.
+  destruct x as [ a b ].
+  destruct x' as [ a' b' ].
+  rewrite homotinvweqweq.
+  apply idpath.
+Qed.
+
+Lemma total2_paths_equiv_pr1 {A : UU} (B : A -> UU) (x x' : ∑ a, B a)
+  (pp : x ╝ x') : maponpaths pr1 (invmap (total2_paths_equiv B x x') pp) = pr1 pp.
+Proof.
+  intros.
+  use (transportf (fun pp' => maponpaths pr1 (invmap (total2_paths_equiv B x x') pp') =
+pr1 pp')).
+  - exact (total2_paths_equiv B x x' (invmap (total2_paths_equiv B x x') pp)).
+  - apply homotweqinvweq.
+  - apply total2_paths_equiv_pr1'.
+Qed.
+
 (** The standard weak equivalence from [ unit ] to a contractible type *)
 
 Definition wequnittocontr {X : UU} (is : iscontr X) : unit ≃ X.

@@ -273,13 +273,13 @@ Proof.
   apply functor_id.
 Defined.
 
-Lemma functor_on_iso_identity_iso_is_identity_iso (C D : precategory) (F : functor C D)
+Lemma functor_on_iso_id (C D : precategory) (F : functor C D)
   (c : C) : (functor_on_iso F) (identity_iso c) = (identity_iso (F c)).
 Proof.
   apply eq_iso.
   simpl.
   apply functor_id.
-.
+Qed.
 
 Lemma functor_on_inv_from_iso' {C C' : precategory} (F : functor C C')
       {a b : ob C} {f : a --> b} (H : is_iso f) :
@@ -727,6 +727,18 @@ Lemma identity_functor_is_fully_faithful { C : precategory_data }
 Proof.
   intros a b.
   apply idisweq.
+Defined.
+
+Lemma identity_functor_on_iso (C : precategory) (X Y : C) (f : iso X Y)
+  : functor_on_iso (functor_identity C) f = f.
+Proof.
+  destruct f as [ f' isiso ].
+  unfold functor_identity; unfold functor_identity_data; unfold functor_on_iso.
+  simpl.
+  apply total2_paths_equiv.
+  use tpair.
+  - apply idpath.
+  - apply isaprop_is_iso.
 Defined.
 
 (** *** Constant functor *)
@@ -1330,25 +1342,54 @@ Proof.
   apply idpath .
 Defined.
 
+Lemma functor_identity_left_on_objects (C D : precategory) (F : functor C D) (X : C)
+  : maponpaths pr1 (functor_identity_left C D F) = idpath (pr1 F).
+Proof.
+  apply idpath.
+Defined.
+
 Lemma functor_identity_right (C D : precategory) (F : functor C D) :
   functor_composite F (functor_identity D) = F.
 Proof.
-  destruct F as [ [ Fob Fmor ] is ] .
-  apply ( maponpaths ( λ p, tpair is_functor (tpair _ Fob Fmor) p ) ) .
-  destruct is as [ idax compax ] .
-  apply pathsdirprod .
-  simpl . apply funextsec . intro t . unfold functor_identity .  unfold functor_id . simpl .
-  rewrite maponpathsidfun .
-  rewrite pathscomp0rid .
-  apply idpath .
+  destruct F as [ [ Fob Fmor ] [ ax1 ax2 ] ].
+  eapply invmap.
+  apply total2_paths_equiv.
+  use tpair.
+  - apply idpath.
+  - simpl.
+    rewrite idpath_transportf.
+    apply dirprodeq; simpl.
+    + apply funextsec.
+      intro a.
+      rewrite maponpathsidfun.
+      apply pathscomp0rid.
+    + apply funextsec; intro a.
+      apply funextsec; intro b.
+      apply funextsec; intro c.
+      apply funextsec; intro f.
+      apply funextsec; intro g.
+      rewrite maponpathsidfun.
+      apply pathscomp0rid.
+Defined.
 
-  apply funextsec . intro t . apply funextsec . intro t0 . apply funextsec . intro t1 .
-  apply funextsec . intro f . apply funextsec . intro g . unfold functor_identity . simpl .
-  unfold functor_comp . simpl .
-  rewrite maponpathsidfun .
-  rewrite pathscomp0rid .
-  apply idpath.
+Lemma functor_identity_right_pr1 (C D : precategory) (F : functor C D)
+  : maponpaths pr1 (functor_identity_right C D F) = idpath (pr1 F).
+Proof.
+  unfold functor_identity_right.
+  apply total2_paths_equiv_pr1.
+Defined.
 
+Lemma functor_identity_right_on_objects (C D : precategory) (F : functor C D) (X : C)
+  : maponpaths (fun H : functor C D => H X) (functor_identity_right C D F) = idpath (F X).
+Proof.
+  assert (idpath (F X) = maponpaths (fun H : functor_data C D => pr1 H X) (idpath (pr1 F))) as Hy.
+    apply idpath.
+  rewrite Hy.
+  rewrite <- functor_identity_right_pr1.
+  symmetry.
+  change (maponpaths (λ H : functor_data C D, pr1 H X) (maponpaths pr1 (functor_identity_right C D F))
+        = maponpaths (λ H : functor C D, pr1 (pr1 H) X) (functor_identity_right C D F)).
+  apply maponpathscomp.
 Defined.
 
 Lemma functor_assoc (C0 C1 C2 C3 : precategory)
