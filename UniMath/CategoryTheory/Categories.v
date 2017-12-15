@@ -515,6 +515,14 @@ Proof.
   apply id_right.
 Defined.
 
+Lemma iso_comp_assoc {C : precategory} {a b c d : ob C}
+  (f : iso a b) (g : iso b c) (h : iso c d) : iso_comp f (iso_comp g h) = iso_comp (iso_comp f g) h.
+Proof.
+  apply eq_iso.
+  simpl.
+  apply assoc.
+Defined.
+
 Lemma inv_iso_unique (C : precategory) (a b : C) (f : iso a b) (g : iso b a) :
   precomp_with f g = identity _ -> g = iso_inv_from_iso f.
 Proof.

@@ -1,17 +1,15 @@
-Require Import UniMath.CategoryTheory.limits.products.
-
-
 Require Import UniMath.Foundations.Sets.
-
 Require Import UniMath.MoreFoundations.Tactics.
-
+Require Import UniMath.Combinatorics.StandardFiniteSets.
 Require Import UniMath.CategoryTheory.Categories.
+Require Import UniMath.CategoryTheory.categories.category_hset.
 Require Import UniMath.CategoryTheory.functor_categories.
 Require Import UniMath.CategoryTheory.ProductCategory.
-Require Import UniMath.Combinatorics.StandardFiniteSets.
+Require Import UniMath.CategoryTheory.limits.products.
 Require Import UniMath.CategoryTheory.limits.graphs.limits.
 Require Import UniMath.CategoryTheory.limits.FinOrdProducts.
-Require Import UniMath.CategoryTheory.categories.category_hset.
+
+
 Local Open Scope cat.
 
 Section Lawvere_Theory.
@@ -173,7 +171,7 @@ Proof.
       simpl.
       rewrite iso_comp_id_left.
       unfold compose. simpl. unfold generator_image_iso. simpl. unfold generating_object. simpl.
-      rewrite functor_on_iso_identity_iso_is_identity_iso.
+      rewrite functor_on_iso_id.
       rewrite iso_comp_id_left.
       reflexivity.
   - intros A B F.
@@ -186,8 +184,21 @@ Proof.
       unfold compose. simpl. unfold generator_image_iso. simpl. unfold generating_object. simpl.
       rewrite iso_comp_id_right.
       apply identity_functor_on_iso.
-  - admit.
-Admitted.
+  - intros A B C D F G H.
+    symmetry.
+    use Lawvere_functor_path.
+    + apply functor_assoc.
+    + unfold preserves_generating_object.
+      rewrite (functtransportf (fun H : functor (underlying_category A) (underlying_category D) => H (generating_object A)) (fun X => iso X (generating_object D))).
+      rewrite (functor_assoc_on_objects (underlying_category A) (underlying_category B) (underlying_category C) (underlying_category D) (underlying_functor F) (underlying_functor G) (underlying_functor H)).
+      rewrite idpath_transportf.
+      unfold compose. simpl. unfold generator_image_iso. simpl. unfold generating_object. simpl.
+      rewrite iso_comp_assoc.
+      rewrite functor_on_iso_comp.
+      Search functor_on_iso.
+      rewrite functor_composite_on_iso.
+      apply idpath.
+Defined.
 
 (* todo: is Law univalent? *)
 (* todo: models *)
